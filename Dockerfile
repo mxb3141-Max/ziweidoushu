@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Create a non-root user (Hugging Face Spaces requirement)
+# Hugging Face Spaces requires running as non-root user
 RUN useradd -m -u 1000 user
 USER user
 ENV HOME=/home/user \
@@ -23,6 +23,7 @@ WORKDIR $HOME/app
 COPY --chown=user . $HOME/app
 
 EXPOSE 7860
+ENV PORT=7860
 
-CMD ["streamlit", "run", "app.py", "--server.port", "7860", "--server.address", "0.0.0.0"]
+CMD ["sh", "-c", "streamlit run app.py --server.port 7860 --server.address 0.0.0.0"]
 
