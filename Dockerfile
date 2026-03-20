@@ -22,12 +22,10 @@ ENV HOME=/home/user \
 WORKDIR $HOME/app
 COPY --chown=user . $HOME/app
 
-# Configuration for Streamlit
-# Render dynamically sets the PORT environment variable, we use that for Streamlit
 ENV STREAMLIT_SERVER_ADDRESS=0.0.0.0
 ENV STREAMLIT_SERVER_ENABLE_CORS=false
 ENV STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=false
 
-# Use the PORT environment variable passed by Render (default to 10000 if not set)
-CMD streamlit run app.py --server.port ${PORT:-10000}
+# Render uses shell to execute CMD, so we can use env vars directly
+CMD sh -c "streamlit run app.py --server.port ${PORT:-10000}"
 
