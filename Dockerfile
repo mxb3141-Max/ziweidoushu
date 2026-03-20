@@ -25,5 +25,11 @@ COPY --chown=user . $HOME/app
 EXPOSE 7860
 ENV PORT=7860
 
-CMD ["sh", "-c", "streamlit run app.py --server.port 7860 --server.address 0.0.0.0"]
+# Add configuration for Streamlit to work properly in Hugging Face iframe
+ENV STREAMLIT_SERVER_PORT=7860
+ENV STREAMLIT_SERVER_ADDRESS=0.0.0.0
+ENV STREAMLIT_SERVER_ENABLE_CORS=false
+ENV STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=false
+
+CMD ["streamlit", "run", "app.py"]
 
