@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Hugging Face Spaces requires running as non-root user
+# Create a non-root user
 RUN useradd -m -u 1000 user
 USER user
 ENV HOME=/home/user \
@@ -22,14 +22,12 @@ ENV HOME=/home/user \
 WORKDIR $HOME/app
 COPY --chown=user . $HOME/app
 
-EXPOSE 7860
-ENV PORT=7860
-
-# Add configuration for Streamlit to work properly in Hugging Face iframe
-ENV STREAMLIT_SERVER_PORT=7860
+# Configuration for Streamlit
+# Render dynamically sets the PORT environment variable, we use that for Streamlit
 ENV STREAMLIT_SERVER_ADDRESS=0.0.0.0
 ENV STREAMLIT_SERVER_ENABLE_CORS=false
 ENV STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=false
 
-CMD ["streamlit", "run", "app.py"]
+# Use the PORT environment variable passed by Render (default to 10000 if not set)
+CMD streamlit run app.py --server.port ${PORT:-10000}
 
